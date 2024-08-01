@@ -3,12 +3,15 @@ import axios from "axios";
 
 function Home() {
     const [commentInput, setCommentInput] = useState("");
-    const [posts, setPosts] = useState([]);
 
+    const [posts, setPosts] = useState([]);
     useEffect(() => {
         axios
             .get("http://localhost:8000/api/posts")
-            .then((response) => setPosts(response.data))
+            .then((response) => {
+                setPosts(response.data.data)
+                console.table(response.data.data)
+            })
             .catch((error) => console.error("Error fetching posts:", error));
     }, []);
 
@@ -16,10 +19,11 @@ function Home() {
         axios
             .post(`http://localhost:8000/api/posts/like/${postId}`)
             .then((response) => {
-                const updatedPosts = posts.map((post) =>
-                    post._id === postId ? response.data : post
-                );
+                const updatedPosts = posts.map((post) =>{
+                    post._id === postId ? response.data: post
+                });
                 setPosts(updatedPosts);
+                console.table(posts)
             })
             .catch((error) => console.error("Error liking post:", error));
     };
@@ -30,9 +34,9 @@ function Home() {
                 text: commentText,
             })
             .then((response) => {
-                const updatedPosts = posts.map((post) =>
-                    post._id === postId ? response.data : post
-                );
+                const updatedPosts = posts.map((post) =>{
+                    post._id === postId ? response.data: post
+                });
                 setPosts(updatedPosts);
             })
             .catch((error) => console.error("Error adding comment:", error));
@@ -41,10 +45,12 @@ function Home() {
     return (
         <div className="max-w-3xl mx-auto p-4">
             <h2 className="text-2xl font-bold mb-4">Recent Posts</h2>
-            {posts.map((post) => (
+            {Array.isArray(posts) && posts?.map((post) => (
+
                 <div key={post._id} className="border border-gray-300 p-4 mb-6 shadow-sm">
                     <h3 className="text-xl font-semibold text-gray-800 mb-2">{post.title}</h3>
                     <p className="text-gray-600">{post.content}</p>
+
                     {post.file && (
                         <div className="mt-4">
                             {post.file.includes(".mp4") ? (
@@ -82,6 +88,7 @@ function Home() {
                         placeholder="Add a comment"
                         className="mt-4 p-2 w-3/4 border border-gray-300 rounded"
                         onChange={(e) => setCommentInput(e.target.value)}
+                        value={commentInput}
                     />
                     <button
                         onClick={() => handleAddComment(post._id, commentInput)}
