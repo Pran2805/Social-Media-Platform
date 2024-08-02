@@ -1,11 +1,11 @@
 import { Post } from "../models/post.model.js";
 import { ApiError } from "../utils/ApiError.js";
-import {asyncHandler} from "../utils/asyncHandler.js"
-import {ApiResponse} from "../utils/ApiResponse.js"
-import mongoose from "mongoose";
+import { asyncHandler } from "../utils/asyncHandler.js"
+import { ApiResponse } from "../utils/ApiResponse.js";
 
-const getPost = asyncHandler(async(req, res)=>{
+const getPost = asyncHandler(async (req, res) => {
     const posts = await Post.find();
+    // console.log(posts)
     res.status(200).json(
         new ApiResponse(201, posts, "post response")
     )
@@ -15,6 +15,8 @@ const createPost = asyncHandler(async (req, res) => {
     const { title, content } = req.body
     const file = req.file ? req.file.filename : undefined
 
+    // console.log(file)
+    // console.log(title, content)
     if (!title || !content) {
         throw new ApiError(400, "Title and Contents are required")
     }
@@ -30,33 +32,44 @@ const createPost = asyncHandler(async (req, res) => {
 const likePost = asyncHandler(async (req, res) => {
     const postId = req.params.postId;
     const post = await Post.findById(postId);
-
+    
     if (!post) {
         throw new ApiError(404, 'Post not found')
     }
 
     post.likes += 1;
-        await post.save();
+    await post.save();
 
-        res.status(200).json(
-            new ApiResponse(201, post, 'post is liked')
-        )
+    res.status(200).json(
+        new ApiResponse(201, post, 'post is liked')
+    )
 })
 
-const commentPost = asyncHandler(async(req, res)=>{
+const commentPost = asyncHandler(async (req, res) => {
     const postId = req.params.postId;
-        const { text } = req.body;
-        const post = await Post.findById(postId);
+    const post = await Post.findById(postId);
 
-        if (!post) {
-            throw new ApiError(404, 'Post not found')
-        }
-        post.comments.push({ text });
-        await post.save();
+    if (!post) {
+        throw new ApiError(404, 'Post not found')
+    }
+    console.log(req.body)
+    
+    if (!post) {
+        throw new ApiError(404, 'Post not found')
+    }
+    
+    const { text } = req.body;
+    if (!text.trim()) {
+        throw new ApiError(400, 'Comment cannot be empty');
+      }
+    
 
-        res.status(200).json(
-            new ApiResponse(201, post, 'comment')
-        )
+    post.comments.push(text);
+    await post.save();
+
+    res.status(200).json(
+        new ApiResponse(201, post, 'comment')
+    )
 })
 
 export {

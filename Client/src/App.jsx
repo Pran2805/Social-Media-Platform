@@ -11,10 +11,10 @@ function App() {
               <nav className="bg-gray-800 p-4">
                   <ul className="flex space-x-4">
                       <li>
-                          <Link to="/" className="text-white font-semibold text-md hover:text-green-500">Home</Link>
+                          <Link to="/" className="text-white font-semibold text-md hover:text-blue-600">Home</Link>
                       </li>
                       <li>
-                          <Link to="/create" className="text-white font-semibold text-md hover:text-green-500">Create Post</Link>
+                          <Link to="/create" className="text-white font-semibold text-md hover:text-blue-600">Create Post</Link>
                       </li>
                   </ul>
               </nav>

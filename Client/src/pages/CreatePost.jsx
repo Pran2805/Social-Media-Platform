@@ -20,6 +20,7 @@ function CreatePost() {
     axios
       .post("http://localhost:8000/api/posts", formData)
       .then((response) => {
+      alert(response.data.message)
         setNewTitle("");
         setNewContent("");
         setNewFile(null);
@@ -45,6 +46,7 @@ function CreatePost() {
           onChange={(event) => setNewContent(event.target.value)}
           value={newContent}
           className="w-full p-3 border border-gray-300 rounded mb-4"
+          
         ></textarea>
         <input
           type="file"
@@ -54,7 +56,7 @@ function CreatePost() {
         />
         <button
           type="submit"
-          className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+          className="bg-blue-500 text-center rounded-lg text-white py-2 px-4 hover:bg-blue-600"
         >
           Post
         </button>
